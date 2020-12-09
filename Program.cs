@@ -31,7 +31,12 @@ namespace AdventCode
 
             // Day6.
             // var day6Ex1 = Day6.Exercise1();
-            var day6Ex2 = Day6.Exercise2();
+            // var day6Ex2 = Day6.Exercise2();
+
+            //Day 8.
+            // var day8Ex1 = Day8.Exercise1();
+            // var day8Ex2 = Day8.Exercise2();
+
         }
     }
 }
