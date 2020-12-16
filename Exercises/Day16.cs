@@ -38,9 +38,11 @@ namespace AdventCode.Exercises
             return rules;
         }
 
+        private static string[] GetNearbyTickets => NearbyTickets.Split("\r\n");        
+
         private static IList<int> GetNearbyTicketsValues()
         {
-            var split = NearbyTickets.Split("\r\n");
+            var split = GetNearbyTickets;
 
             var aux = split.SelectMany(
                 x => x.Split(","),
@@ -69,10 +71,8 @@ namespace AdventCode.Exercises
             return result;
         }
 
-        public static long Exercise1()
+        private static IList<int> GetNotPossibleValues()
         {
-            long result = 0;
-
             var rules = GetParsedRules();
             var nearbyTicketsValues = GetNearbyTicketsValues();
 
@@ -88,9 +88,25 @@ namespace AdventCode.Exercises
                                     .Where(x => !posibleValues.Contains(x))
                                     .ToList();
 
-            result = notPosibleValues.Sum();
+            return notPosibleValues;
+        }
+
+        public static long Exercise1()
+        {
+            long result = 0;
+
+            result = GetNotPossibleValues().Sum();
 
             return result;
+        }
+
+        public static long Exercise2()
+        {
+            var rules = GetParsedRules();
+            var nearbyTicketsList = GetNearbyTickets.Select(x => 
+            {
+                x.Split(",").Select(y => int.Parse(y));
+            });
         }
 
         private class Rule
