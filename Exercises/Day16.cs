@@ -102,11 +102,78 @@ namespace AdventCode.Exercises
 
         public static long Exercise2()
         {
+            long result = 0;
+
+            // Parsed rules.
             var rules = GetParsedRules();
+
+            // Get not possible values, calculated in first exercise.
+            var notPossibleValues = GetNotPossibleValues().ToList();
+
+            // Get list of parsed values in nearby ticket data.
             var nearbyTicketsList = GetNearbyTickets.Select(x => 
             {
-                x.Split(",").Select(y => int.Parse(y));
+                var numbers = x.Split(",").Select(y => int.Parse(y)).ToArray();
+
+                return numbers;
             });
+
+            // Get all the nearby tickets list wihtout the ones that contain not possible values.
+            var validTicketList = nearbyTicketsList.Where(x => !x.Any(y => notPossibleValues.Contains(y)));
+
+            // Parse our ticket and append.
+            var ticket = Ticket.Split(",").Select(x => int.Parse(x));
+            //validTicketList.Append(ticket);
+
+            // Get number of fields.
+            var numberOfRows = rules.Count();
+
+            List<int[]> ticketColumns = new List<int[]>();
+
+            // Transpose matrix.
+            for (int i = 0; i < numberOfRows; i++)
+            {
+                var column = validTicketList.Select(x => x.ElementAt(i));
+                ticketColumns.Add(column.ToArray());
+            }
+
+            IEnumerable<Rule> pendingIndexRules = rules;
+            var pendingTicketColums = new List<int[]>(ticketColumns);
+            do
+            {                
+                // Iterate rules.
+                foreach (var rule in pendingIndexRules)
+                {
+                    // Possible numbers for rule.
+                    var possibleValues = GetPosibleNumbers(rule);
+
+                    // Get all columns that fits with possible values.
+                    var possibleRows = pendingTicketColums.Where(x => x.All(y => possibleValues.Contains(y)));
+                    var possibleRowsCount = possibleRows.Count();
+
+                    if (possibleRowsCount == 1)
+                    {
+                        // Assign index, mark as done and remove from pending.
+                        rule.index = ticketColumns.IndexOf(possibleRows.First());
+                        rule.hasIndex = true;
+                        pendingTicketColums.Remove(possibleRows.First());
+                        break;
+                    }
+                }
+                // Remove already assigned rule.
+                pendingIndexRules = rules.Where(x => !x.hasIndex).ToList();
+
+            } while (pendingIndexRules.Any()); // Repeat while still pending rules to find index.
+
+            // Get all rule indexes that have 'departure' in its name.
+            var departureIndexes = rules.Where(x => x.Name.Contains("departure", StringComparison.OrdinalIgnoreCase))
+                                    .Select(x => x.index);
+
+            // Get values of own ticket , cast to long and multiply each other.
+            result = departureIndexes.Select(x => (long)ticket.ElementAt(x))
+                                     .Aggregate((a,b) => a*b );
+
+            return result;
         }
 
         private class Rule
@@ -114,6 +181,8 @@ namespace AdventCode.Exercises
             public string Name { get; set; }
             public (int, int) MinRange { get; set; }
             public (int, int) MaxRange { get; set; }
+            public bool hasIndex { get; set; } = false;
+            public int index { get; set; }
         }
 
         private static readonly string RulesString =

@@ -39,7 +39,8 @@ namespace AdventCode
 
             //Day 16.
 
-            var day16Ex1 = Day16.Exercise1();
+            // var day16Ex1 = Day16.Exercise1();
+            var day16Ex2 = Day16.Exercise2();
 
         }
     }
