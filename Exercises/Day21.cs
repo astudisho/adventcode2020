@@ -67,8 +67,9 @@ namespace AdventCode.Exercises
             foreach (var allergen in allergenes)
             {
                 var allergenFoods = foods.Where(x => x.Allergenes.Contains(allergen)).ToList();
-
                 var allergenIngredients = allergenFoods.SelectMany(x => x.Ingredients, (food, ingredient) => ingredient ).ToList();
+
+                var suspiciousIngredients2 = allergenIngredients.Where(x => allergenFoods.All(y => y.Ingredients.Contains(x))).ToList();
 
                 suspiciousIngredients.AddRange(allergenIngredients);
 
