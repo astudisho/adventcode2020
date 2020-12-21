@@ -5,11 +5,11 @@ using System.Text;
 
 namespace AdventCode.Exercises
 {
-    static class InputFetcher
+    public static class InputFetcher
     {
-        internal static string FetchInput(string fileName)
+        public static string FetchInput(string fileName, string path = "..\\..\\..\\Exercises\\Inputs\\")
         {
-            var fullPath = AppDomain.CurrentDomain.BaseDirectory + $"..\\..\\..\\Exercises\\Inputs\\{fileName}";
+            var fullPath = AppDomain.CurrentDomain.BaseDirectory + $"{path}{fileName}";
             using (var sr = new StreamReader(fullPath))
             {
                 var text = sr.ReadToEnd();
